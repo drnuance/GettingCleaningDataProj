@@ -44,4 +44,4 @@ run.data <- merge(run.data, activity.labels, by.x="activity_labels_id", by.y="ac
 run.data.summary <- select(run.data, -activity_labels_id) %>%
         group_by(subject_id, activity_labels) %>%
         summarise_each(funs(mean))
-write.csv(run.data.summary, file = "tidy.csv")
+write.table(run.data.summary, file = "tidy.txt", row.name=FALSE)

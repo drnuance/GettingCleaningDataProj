@@ -9,7 +9,7 @@ An analysis of accelerometer data generated from an experiment with mobile phone
 This repository contains four files:
 
   - `run_anlaysis.R`: the R script to process raw data to tidy data
-  - `tidy.csv`: the ouput (tidy data) generated from the R script
+  - `tidy.txt`: the ouput (tidy data) generated from the R script
   - `CodeBook.md`: the doc that describes the variables, the data, and any transformations or work performed to clean up the data
   - `README.md`: this file itself
 
