@@ -20,14 +20,18 @@ remove(subject.test, x.test, y.test, subject.train, x.train, y.train, test, trai
 
 
 # 2. Extracts only the measurements on the mean and standard deviation for each measurement.
-# Read features name, pass it to the data, and use it to extract columns
-features <- read.table("../UCI HAR Dataset/features.txt")
-headers <- features[,2]
 
-names(x.test) <- headers
-names(x.train) <- headers
+features <- read.table("../UCI HAR Dataset/features.txt", sep="", header=FALSE)
+column.names <- as.vector(features[,2])
+# Identify columns represent mean or std.
+column.needed <- grep(".*[M|m]ean.*|.*[S|s]td.*", column.names)
+run.data <- run.data[, c(1,2, column.needed+2)] # Right shift 2 due to subject and y table
 
-mean_and_std <- grepl("mean\\(\\)|std\\(\\)", headers) # Identify columns related to mean and std
-x.test.mean_and_std <- x.test[,mean_and_std] # Note: Logically, it is "or", not "and".
-X.train.mean_and_std <- x.train[,mean_and_std]
+# 3. Uses descriptive activity names to name the activities in the data set
 
+colnames(run.data) <- c("subject_id", "activity_labels", column.names[column.needed])
+remove(features, column.needed, column.names)
+
+# 4. Appropriately labels the data set with descriptive variable names.
+
+activity.labels <- read.table("../UCI HAR Dataset/activity_labels.txt", sep="", header=FALSE)
