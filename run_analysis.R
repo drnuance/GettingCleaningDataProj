@@ -27,11 +27,21 @@ column.names <- as.vector(features[,2])
 column.needed <- grep(".*[M|m]ean.*|.*[S|s]td.*", column.names)
 run.data <- run.data[, c(1,2, column.needed+2)] # Right shift 2 due to subject and y table
 
-# 3. Uses descriptive activity names to name the activities in the data set
-
-colnames(run.data) <- c("subject_id", "activity_labels", column.names[column.needed])
+# 4. Appropriately labels the data set with descriptive variable names.
+# Do step 4 first because it will be easier to operate with meaning column names
+colnames(run.data) <- c("subject_id", "activity_labels_id", column.names[column.needed])
 remove(features, column.needed, column.names)
 
-# 4. Appropriately labels the data set with descriptive variable names.
+# 3. Uses descriptive activity names to name the activities in the data set 
 
-activity.labels <- read.table("../UCI HAR Dataset/activity_labels.txt", sep="", header=FALSE)
+activity.labels <- read.table("../UCI HAR Dataset/activity_labels.txt", sep="", 
+                              header=FALSE, col.names = c("activity_labels_id", "activity_labels"),
+                              colClasses = c("integer", "character")) 
+run.data <- merge(run.data, activity.labels, by.x="activity_labels_id", by.y="activity_labels_id")
+
+# 5. From the data set in step 4, creates a second, independent tidy data set with the average of 
+# each variable for each activity and each subject.
+run.data.summary <- select(run.data, -activity_labels_id) %>%
+        group_by(subject_id, activity_labels) %>%
+        summarise_each(funs(mean))
+write.csv(run.data.summary, file = "tidy.csv")
